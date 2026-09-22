@@ -8,6 +8,17 @@ const model = new ChatMistralAI({
   apiKey: process.env.MISTRAL_API_KEY,
 });
 
-const response = await model.invoke("Hello");
+// Response will come  at the same time------->
+// const response = await model.invoke("provide factorial code in javascript.");
 
-console.log(response.text);
+// console.log(response.text);
+
+
+
+// Response comes in word to word formate---------->
+const stream = await model.stream("give prime number code in iterative in js ")
+
+
+for await( const chunk of stream){
+    process.stdout.write(chunk.text)
+}
