@@ -9,16 +9,26 @@ const readline = rl.createInterface({
   output: process.stdout,
 });
 
+// const usePrompt = await readline.question("Enter your Prompt:")
+// console.log(usePrompt);
+// readline.close();
 
-const usePrompt = await readline.question("Enter your Prompt:")
-console.log(usePrompt);
-readline.close();
+const model = new ChatMistralAI({
+  model: "ministral-3b-latest",
+  apiKey: process.env.MISTRAL_API_KEY,
+});
 
+while (true) {
+  const usePrompt = await readline.question("User : ");
 
-// const model = new ChatMistralAI({
-//   model: "ministral-3b-latest",
-//   apiKey: process.env.MISTRAL_API_KEY,
-// });
+  const stream = await model.stream(usePrompt);
+
+  for await (const chunk of stream) {
+    process.stdout.write(chunk.text);
+  }
+
+  process.stdout.write("\n");
+}
 
 // Response will come  at the same time------->
 // const response = await model.invoke("provide factorial code in javascript.");
