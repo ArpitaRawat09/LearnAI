@@ -1,6 +1,7 @@
 import { ChatMistralAI } from "@langchain/mistralai";
 import { config } from "dotenv";
 import rl from "readline/promises";
+import { HumanMessage, AIMessage } from "langchain";
 
 config();
 
@@ -18,14 +19,23 @@ const model = new ChatMistralAI({
   apiKey: process.env.MISTRAL_API_KEY,
 });
 
+const messages = [];
+
 while (true) {
   const usePrompt = await readline.question("User : ");
 
-  const stream = await model.stream(usePrompt);
+  messages.push(new HumanMessage(usePrompt));
+
+  const stream = await model.stream(messages);
+
+  let aiResponse = "";
 
   for await (const chunk of stream) {
     process.stdout.write(chunk.text);
+    aiResponse += chunk.text;
   }
+
+  messages.push(new AIMessage(aiResponse));
 
   process.stdout.write("\n");
 }
