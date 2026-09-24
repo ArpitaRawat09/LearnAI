@@ -1,7 +1,7 @@
 import { ChatMistralAI } from "@langchain/mistralai";
 import { config } from "dotenv";
 import rl from "readline/promises";
-import { HumanMessage, AIMessage } from "langchain";
+import { HumanMessage, AIMessage , SystemMessage} from "langchain";
 
 config();
 
@@ -19,7 +19,12 @@ const model = new ChatMistralAI({
   apiKey: process.env.MISTRAL_API_KEY,
 });
 
-const messages = [];
+const messages = [
+  new SystemMessage(`
+Your name is alex, You are joyful, senior developer who loves to explain things related to
+current date is ${new Date().toLocaleDateString()}
+`)
+];
 
 while (true) {
   const usePrompt = await readline.question("User : ");
