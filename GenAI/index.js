@@ -4,6 +4,7 @@ import rl from "readline/promises";
 import {
   HumanMessage,
   AIMessage,
+  AIMessageChunk,
   SystemMessage,
   tool,
   createAgent,
@@ -76,8 +77,10 @@ while (true) {
   let aiResponse = "";
 
   for await (const [chunk] of stream) {
-    process.stdout.write(chunk.text);
-    aiResponse += chunk.text;
+    if (chunk instanceof AIMessageChunk) {
+      process.stdout.write(chunk.text);
+      aiResponse += chunk.text;
+    }
   }
 
   messages.push(new AIMessage(aiResponse));
