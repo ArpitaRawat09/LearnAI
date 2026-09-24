@@ -9,11 +9,20 @@ import {
   createAgent,
 } from "langchain";
 import * as z from "zod";
+import { tavily } from "@tavily/core";
 
 config();
 
-function getLatestInformation({ query }) {
-  return "India is recently advanced in technology and is a hub for software development and IT services. The country has a growing startup ecosystem, with many innovative companies emerging in various sectors such as fintech, healthtech, and edtech. Additionally, India has made significant strides in space exploration, renewable energy, and digital infrastructure.";
+const tvly = tavily({ apiKey: process.env.TAVILY_API_KEY });
+
+async function getLatestInformation({ query }) {
+  const response = await tvly.search(query);
+
+  const results = response.results;
+
+  const content = results.map((results) => results.content).join("\n\n\n");
+
+  return content;
 }
 
 const getLatestInformationTool = tool(getLatestInformation, {
